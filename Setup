@@ -6,7 +6,7 @@ USERNAME=kali
 
 function unsupported_arch() {
     printf "${red}"
-    echo "[*] Unsupported Architecture\n\n"
+    echo "[*] Arquitetura não suportada \n\n"
     printf "${reset}"
     exit
 }
@@ -46,7 +46,7 @@ function ask() {
 }
 
 function get_arch() {
-    printf "${blue}[*] Checking device architecture ..."
+    printf "${blue}[*] Verificando a arquitetura do dispositivo ..."
     case $(getprop ro.product.cpu.abi) in
         arm64-v8a)
             SYS_ARCH=arm64
@@ -69,7 +69,7 @@ function set_strings() {
 function prepare_fs() {
     unset KEEP_CHROOT
     if [ -d ${CHROOT} ]; then
-        if ask "Existing rootfs directory found. Delete and create a new one?" "N"; then
+        if ask "Diretório rootfs existente encontrado. Excluir e criar um novo?" "N"; then
             rm -rf ${CHROOT}
         else
             KEEP_CHROOT=1
@@ -79,7 +79,7 @@ function prepare_fs() {
 
 function cleanup() {
     if [ -f ${IMAGE_NAME} ]; then
-        if ask "Delete downloaded rootfs file?" "N"; then
+        if ask "Excluir arquivo rootfs baixado?" "N"; then
 	    if [ -f ${IMAGE_NAME} ]; then
                 rm -f ${IMAGE_NAME}
 	    fi
@@ -91,7 +91,7 @@ function cleanup() {
 } 
 
 function check_dependencies() {
-    printf "${blue}\n[*] Checking package dependencies...${reset}\n"
+    printf "${blue}\n[*] Verificando as dependências do pacotes...${reset}\n"
     ## Workaround for termux-app issue #1283 (https://github.com/termux/termux-app/issues/1283)
     ##apt update -y &> /dev/null
     apt-get update -y &> /dev/null || apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" dist-upgrade -y &> /dev/null
@@ -102,7 +102,7 @@ function check_dependencies() {
         else
             printf "Installing ${i}...\n"
             apt install -y $i || {
-                printf "${red}ERROR: Failed to install packages.\n Exiting.\n${reset}"
+                printf "${red}ERROR: Falha ao instalar pacotes.\n Exiting.\n${reset}"
 	        exit
             }
         fi
@@ -119,15 +119,15 @@ function get_url() {
 function get_rootfs() {
     unset KEEP_IMAGE
     if [ -f ${IMAGE_NAME} ]; then
-        if ask "Existing image file found. Delete and download a new one?" "N"; then
+        if ask "Arquivo de imagem existente encontrado. Excluir e baixar um novo?" "N"; then
             rm -f ${IMAGE_NAME}
         else
-            printf "${yellow}[!] Using existing rootfs archive${reset}\n"
+            printf "${yellow}[!] Usando o arquivo rootfs existente${reset}\n"
             KEEP_IMAGE=1
             return
         fi
     fi
-    printf "${blue}[*] Downloading rootfs...${reset}\n\n"
+    printf "${blue}[*] Baixando rootfs...${reset}\n\n"
     get_url
     wget ${EXTRA_ARGS} --continue "${ROOTFS_URL}"
 }
