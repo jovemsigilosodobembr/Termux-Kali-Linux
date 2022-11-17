@@ -1,7 +1,13 @@
 # Termux-Kali-Linux
 
+PASSO A PASSO DA INSTALAÇÃO
+
 ```
-git clone https://github.com/jovemsigilosodobembr/Termux-Kali-Linux
+pkg install wget
+```
+
+```
+wget hhttps://raw.githubusercontent.com/jovemsigilosodobembr/Termux-Kali-Linux/main/Setup
 ```
 
 ```
