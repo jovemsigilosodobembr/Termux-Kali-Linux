@@ -164,9 +164,9 @@ function extract_rootfs() {
 
 
 function create_launcher() {
-    NH_LAUNCHER=${PREFIX}/bin/nethunter
-    NH_SHORTCUT=${PREFIX}/bin/nh
-    cat > $NH_LAUNCHER <<- EOF
+    KALI_LAUNCHER=${PREFIX}/bin/KALI
+    KALI_SHORTCUT=${PREFIX}/bin/KALI
+    cat > $KALI_LAUNCHER <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
@@ -181,7 +181,7 @@ user="$USERNAME"
 home="/home/\$user"
 start="sudo -u kali /bin/bash"
 
-## NH can be launched as root with the "-r" cmd attribute
+## KALI can be launched as root with the "-r" cmd attribute
 ## Also check if user kali exists, if not start as root
 if grep -q "kali" ${CHROOT}/etc/passwd; then
     KALIUSR="1";
@@ -220,12 +220,12 @@ else
 fi
 EOF
 
-    chmod 700 $NH_LAUNCHER
-    if [ -L ${NH_SHORTCUT} ]; then
-        rm -f ${NH_SHORTCUT}
+    chmod 700 $KALI_LAUNCHER
+    if [ -L ${KALI_SHORTCUT} ]; then
+        rm -f ${KALI_SHORTCUT}
     fi
-    if [ ! -f ${NH_SHORTCUT} ]; then
-        ln -s ${NH_LAUNCHER} ${NH_SHORTCUT} >/dev/null
+    if [ ! -f ${KALI_SHORTCUT} ]; then
+        ln -s ${KALI_LAUNCHER} ${KALI_SHORTCUT} >/dev/null
     fi
    
 }
@@ -235,73 +235,6 @@ function create_kex_launcher() {
     cat > $KEX_LAUNCHER <<- EOF
 #!/bin/bash
 
-function start-kex() {
-    if [ ! -f ~/.vnc/passwd ]; then
-        passwd-kex
-    fi
-    USR=\$(whoami)
-    if [ \$USR == "root" ]; then
-        SCREEN=":2"
-    else
-        SCREEN=":1"
-    fi 
-    export HOME=\${HOME}; export USER=\${USR}; LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libgcc_s.so.1 nohup vncserver \$SCREEN >/dev/null 2>&1 </dev/null
-    starting_kex=1
-    return 0
-}
-
-function stop-kex() {
-    vncserver -kill :1 | sed s/"Xtigervnc"/"NetHunter KeX"/
-    vncserver -kill :2 | sed s/"Xtigervnc"/"NetHunter KeX"/
-    return $?
-}
-
-function passwd-kex() {
-    vncpasswd
-    return $?
-}
-
-function status-kex() {
-    sessions=\$(vncserver -list | sed s/"TigerVNC"/"NetHunter KeX"/)
-    if [[ \$sessions == *"590"* ]]; then
-        printf "\n\${sessions}\n"
-        printf "\nYou can use the KeX client to connect to any of these displays.\n\n"
-    else
-        if [ ! -z \$starting_kex ]; then
-            printf '\nError starting the KeX server.\nPlease try "nethunter kex kill" or restart your termux session and try again.\n\n'
-        fi
-    fi
-    return 0
-}
-
-function kill-kex() {
-    pkill Xtigervnc
-    return \$?
-}
-
-case \$1 in
-    start)
-        start-kex
-        ;;
-    stop)
-        stop-kex
-        ;;
-    status)
-        status-kex
-        ;;
-    passwd)
-        passwd-kex
-        ;;
-    kill)
-        kill-kex
-        ;;
-    *)
-        stop-kex
-        start-kex
-        status-kex
-        ;;
-esac
-EOF
 
     chmod 700 $KEX_LAUNCHER
 }
@@ -327,8 +260,8 @@ function fix_uid() {
     ## Change kali uid and gid to match that of the termux user
     USRID=$(id -u)
     GRPID=$(id -g)
-    nh -r usermod -u $USRID kali 2>/dev/null
-    nh -r groupmod -g $GRPID kali 2>/dev/null
+    KALI -r usermod -u $USRID kali 2>/dev/null
+    KALI -r groupmod -g $GRPID kali 2>/dev/null
 }
 
 function print_banner() {
