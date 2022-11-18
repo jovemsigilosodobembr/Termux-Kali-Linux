@@ -147,7 +147,7 @@ function verify_sha() {
     if [ -z $KEEP_IMAGE ]; then
         printf "\n${blue}[*] Verifying integrity of rootfs...${reset}\n\n"
         sha512sum -c $SHA_NAME || {
-            printf "${red} Rootfs corrupted. Please run this installer again or download the file manually\n${reset}"
+            printf "${red} Rootfs corrompidos. Execute este instalador novamente ou baixe o arquivo manualmente\n${reset}"
             exit 1
         }
     fi
@@ -155,18 +155,18 @@ function verify_sha() {
 
 function extract_rootfs() {
     if [ -z $KEEP_CHROOT ]; then
-        printf "\n${blue}[*] Extracting rootfs... ${reset}\n\n"
+        printf "\n${blue}[*] Extraindo rootfs... ${reset}\n\n"
         proot --link2symlink tar -xf $IMAGE_NAME 2> /dev/null || :
     else        
-        printf "${yellow}[!] Using existing rootfs directory${reset}\n"
+        printf "${yellow}[!] Usando o diretório rootfs existente${reset}\n"
     fi
 }
 
 
 function create_launcher() {
-    NH_LAUNCHER=${PREFIX}/bin/nethunter
-    NH_SHORTCUT=${PREFIX}/bin/nh
-    cat > $NH_LAUNCHER <<- EOF
+    KALI_LAUNCHER=${PREFIX}/bin/nethunter
+    KALI_SHORTCUT=${PREFIX}/bin/KALI
+    cat > $KALI_LAUNCHER <<- EOF
 #!/data/data/com.termux/files/usr/bin/bash -e
 cd \${HOME}
 ## termux-exec sets LD_PRELOAD so let's unset it before continuing
@@ -220,12 +220,12 @@ else
 fi
 EOF
 
-    chmod 700 $NH_LAUNCHER
-    if [ -L ${NH_SHORTCUT} ]; then
-        rm -f ${NH_SHORTCUT}
+    chmod 700 $KALI_LAUNCHER
+    if [ -L ${KALI_SHORTCUT} ]; then
+        rm -f ${KALI_SHORTCUT}
     fi
-    if [ ! -f ${NH_SHORTCUT} ]; then
-        ln -s ${NH_LAUNCHER} ${NH_SHORTCUT} >/dev/null
+    if [ ! -f ${KALI_SHORTCUT} ]; then
+        ln -s ${KALI_LAUNCHER} ${KALI_SHORTCUT} >/dev/null
     fi
    
 }
