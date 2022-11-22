@@ -7,7 +7,7 @@ pkg install wget
 ```
 
 ```
-wget hhttps://raw.githubusercontent.com/jovemsigilosodobembr/Termux-Kali-Linux/main/Setup
+wget https://raw.githubusercontent.com/jovemsigilosodobembr/Termux-Kali-Linux/main/Setup
 ```
 
 ```
